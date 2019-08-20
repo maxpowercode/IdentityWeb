@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>&#xD;&#xD;
+  <ItemGroup>&#xD;&#xD;&#xD;
   </ItemGroup>
-  <ItemGroup>&#xD;
+  <ItemGroup>&#xD;&#xD;
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="microsoft.entityframeworkcore" Version="2.2.6"/>
@@ -12,6 +12,7 @@
     <PackageReference Include="microsoft.aspnetcore.identity.entityframeworkcore" Version="2.2.0"/>
     <PackageReference Include="microsoft.entityframeworkcore.sqlserver" Version="2.2.6"/>
     <PackageReference Include="microsoft.entityframeworkcore.design" Version="2.2.6"/>
+    <DotNetCliToolReference Include="microsoft.dotnet.watcher.tools" Version="2.0.2"/>
     <DotNetCliToolReference Include="microsoft.entityframeworkcore.tools.dotnet" Version="2.0.3"/>
   </ItemGroup>
 </Project>

@@ -25,16 +25,17 @@ namespace IdentityWeb.Controllers
         private readonly ILogger<HomeController> _logger;
 
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationUserRole> _roleManager;
+
+        private readonly SignInManager<ApplicationUser> _singinManager;
 
         public AccountController(
              ILogger<HomeController> logger
             ,UserManager<ApplicationUser> userManager
-            ,RoleManager<ApplicationUserRole> roleManager)
+            ,SignInManager<ApplicationUser> signInManager)
         {
             _logger = logger;
             _userManager =userManager;
-            _roleManager =roleManager;
+            _singinManager =signInManager;
         }
 
         public IActionResult Singin()
@@ -56,10 +57,14 @@ namespace IdentityWeb.Controllers
                     NormalizedEmail=registerViewModel.Email,
                     NormalizedUserName =registerViewModel.Email
                 };
+                
                 var restule =await _userManager.CreateAsync(user,registerViewModel.Password);
+
                 if(restule.Succeeded)
                 {
+                    await _singinManager.SignInAsync(user,isPersistent:true);
                     return RedirectToAction("Index", "Home");
+
                 }
                 else
                 {
@@ -73,7 +78,24 @@ namespace IdentityWeb.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> Login(RegisterViewModel loginViewModel, string returnUrl = null)
+        {
+            if (ModelState.IsValid)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+                var user = await _userManager.FindByEmailAsync(loginViewModel.Email);
+                if (user == null)
+                {
 
+                }
+
+                await _singinManager.SignInAsync(user, isPersistent: true);
+                return RedirectToLocal(returnUrl);
+            }
+
+            return View();
+        }
         public IActionResult MarkLogin()
         {
 
@@ -86,13 +108,11 @@ namespace IdentityWeb.Controllers
 
             return Ok();
         }
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            await _singinManager.SignOutAsync();
 
-
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            return Ok();
+            return RedirectToAction("Index", "Home");
         }
         public IActionResult Index()
         {
